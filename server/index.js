@@ -9,7 +9,7 @@ app.use(cors());
 
 const { Schema } = mongoose;
 const CategorySchema = new Schema({
-  name: { type: String, required: true },
+  name: { type: String, required: true }
 });
 const BooksSchema = new Schema(
   {
@@ -17,8 +17,9 @@ const BooksSchema = new Schema(
     title: { type: String, required: true },
     description: { type: String, required: true },
     image: { type: String, required: true },
-    category: [
-      { type: mongoose.Schema.Types.ObjectId, ref: "Category", required: true },
+    category: [{
+     categoryId : { type: mongoose.Schema.Types.ObjectId, ref: "Category", required: true },
+    }
     ],
   },
   { timestamps: true }
@@ -28,9 +29,13 @@ const Books = mongoose.model("books", BooksSchema);
 const Category = mongoose.model("categories", CategorySchema);
 
 //BOOKS GET
+// BOOKS GET
 app.get("/books", async (req, res) => {
   try {
-    const books = await Books.find({});
+    const books = await Books.find({})
+      .populate("category.categoryId") 
+    
+
     res.send(books);
   } catch (error) {
     res.status(500).json({ message: error });
